@@ -7,7 +7,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class MainActivity : AppCompatActivity() {
@@ -22,7 +22,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val addBtn = findViewById<Button>(R.id.addBtn)
+        val addBtn = findViewById<FloatingActionButton>(R.id.addBtn)
+        val recycleview = findViewById<RecyclerView>(R.id.recyclerview)
 
         transactions = arrayListOf(
             Transaction("wekend budget",400.0),
@@ -43,7 +44,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        val recycleview = findViewById<RecyclerView>(R.id.recyclerview)
+
 
         recycleview.apply {
             adapter = transactionAdapter
@@ -52,7 +53,8 @@ class MainActivity : AppCompatActivity() {
         updateDashboard()
 
         addBtn.setOnClickListener {
-            Intent(this@MainActivity,AddTransactionActivity::class.java).also {startActivity(it)}
+            val intent = Intent(this@MainActivity, AddTransactionActivity::class.java)
+            startActivity(intent)
         }
 
     }

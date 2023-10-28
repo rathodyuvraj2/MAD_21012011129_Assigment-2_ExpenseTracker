@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
+import com.google.android.material.textfield.TextInputLayout
 import org.w3c.dom.Text
 
 class AddTransactionActivity : AppCompatActivity() {
@@ -19,9 +21,9 @@ class AddTransactionActivity : AppCompatActivity() {
         val addTransactionBtn = findViewById<Button>(R.id.addTransactionBtn)
         val labelInput = findViewById<TextView>(R.id.labelInput)
         val amountInput = findViewById<TextView>(R.id.amountInput)
-        val labelLayout = findViewById<TextView>(R.id.labelLayout)
-        val amountLayout = findViewById<TextView>(R.id.amountLayout)
-        val closeBtn= findViewById<Button>(R.id.closeBtn)
+        val labelLayout = findViewById<TextInputLayout>(R.id.labelLayout)
+        val amountLayout = findViewById<TextInputLayout>(R.id.amountLayout)
+        val closeBtn= findViewById<ImageButton>(R.id.closeBtn)
 
         labelInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
