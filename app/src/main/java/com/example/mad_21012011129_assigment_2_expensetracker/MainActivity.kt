@@ -1,7 +1,9 @@
 package com.example.mad_21012011129_assigment_2_expensetracker
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,10 +17,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var oldTransactions : List<Transaction>
     private lateinit var transactionAdapter: TransactionAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val addBtn = findViewById<Button>(R.id.addBtn)
 
         transactions = arrayListOf(
             Transaction("wekend budget",400.0),
@@ -47,6 +51,10 @@ class MainActivity : AppCompatActivity() {
         }
         updateDashboard()
 
+        addBtn.setOnClickListener {
+            Intent(this@MainActivity,AddTransactionActivity::class.java).also {startActivity(it)}
+        }
+
     }
     private fun updateDashboard(){
         val totalAmount : Double = transactions.map { it.amount }.sum()
@@ -56,9 +64,10 @@ class MainActivity : AppCompatActivity() {
       val budget = findViewById<TextView>(R.id.budget)
         val expense = findViewById<TextView>(R.id.expense)
         val balance = findViewById<TextView>(R.id.balance)
-        balance.text = "$ %2f".format(totalAmount)
-        expense.text = "$ %2f".format(expenseAmount)
-        budget.text = "$ %2f".format(budgetAmount)
+
+        balance.text = String.format("$%.2f", totalAmount)
+        expense.text = String.format("$%.2f", expenseAmount)
+        budget.text = String.format("$%.2f", budgetAmount)
 
     }
 }
