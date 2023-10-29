@@ -1,75 +1,64 @@
 package com.example.mad_21012011129_assigment_2_expensetracker
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var deletedTransaction: Transaction
-    private lateinit var transactions : List<Transaction>
-    private lateinit var oldTransactions : List<Transaction>
+    private lateinit var transactions: List<Transaction>
     private lateinit var transactionAdapter: TransactionAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
+    private lateinit var dbHelper: DatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val addBtn = findViewById<FloatingActionButton>(R.id.addBtn)
-        val recycleview = findViewById<RecyclerView>(R.id.recyclerview)
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
 
-        transactions = arrayListOf(
-            Transaction("wekend budget",400.0),
-            Transaction("wekend budget",-400.0),
-            Transaction("wekend budget",400.0),
-            Transaction("wekend budget",-400.0),
-            Transaction("wekend budget",400.0),
-            Transaction("wekend budget",400.0),
-            Transaction("wekend budget",-400.0),
-            Transaction("wekend budget",400.0),
-            Transaction("wekend budget",400.0),
-            Transaction("wekend budget",400.0),
-            Transaction("wekend budget",400.0),
-            Transaction("wekend budget",400.0),
-        )
+        transactions = ArrayList()
         transactionAdapter = TransactionAdapter(transactions)
-        linearLayoutManager =  LinearLayoutManager(this)
+        linearLayoutManager = LinearLayoutManager(this)
+        dbHelper = DatabaseHelper(this)
 
-
-
-
-
-        recycleview.apply {
+        recyclerView.apply {
             adapter = transactionAdapter
             layoutManager = linearLayoutManager
         }
-        updateDashboard()
 
         addBtn.setOnClickListener {
-            val intent = Intent(this@MainActivity, AddTransactionActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this@MainActivity, AddTransactionActivity::class.java))
         }
-
     }
-    private fun updateDashboard(){
-        val totalAmount : Double = transactions.map { it.amount }.sum()
-        val budgetAmount : Double = transactions.filter { it.amount>0 }.map { it.amount }.sum()
-        val expenseAmount : Double = totalAmount - budgetAmount
 
-      val budget = findViewById<TextView>(R.id.budget)
+    override fun onResume() {
+        super.onResume()
+        fetchAll()
+    }
+
+    private fun fetchAll() {
+        transactions = dbHelper.getAllTransactions()
+        updateDashboard()
+        transactionAdapter.setData(transactions)
+    }
+
+    private fun updateDashboard() {
+        val totalAmount = transactions.sumByDouble { it.amount }
+        val budgetAmount = transactions.filter { it.amount > 0 }.sumByDouble { it.amount }
+        val expenseAmount = totalAmount - budgetAmount
+
+        val budget = findViewById<TextView>(R.id.budget)
         val expense = findViewById<TextView>(R.id.expense)
         val balance = findViewById<TextView>(R.id.balance)
 
         balance.text = String.format("$%.2f", totalAmount)
         expense.text = String.format("$%.2f", expenseAmount)
         budget.text = String.format("$%.2f", budgetAmount)
-
     }
 }

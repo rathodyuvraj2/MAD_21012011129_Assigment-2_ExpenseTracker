@@ -1,71 +1,60 @@
 package com.example.mad_21012011129_assigment_2_expensetracker
 
-import android.annotation.SuppressLint
-import android.icu.text.AlphabeticIndex.Bucket.LabelType
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputLayout
-import org.w3c.dom.Text
 
 class AddTransactionActivity : AppCompatActivity() {
-    @SuppressLint("WrongViewCast")
+    private lateinit var labelInput: EditText
+    private lateinit var amountInput: EditText
+    private lateinit var labelLayout: TextInputLayout
+    private lateinit var amountLayout: TextInputLayout
+    private lateinit var dbHelper: DatabaseHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_transaction)
 
+        labelInput = findViewById(R.id.labelInput)
+        amountInput = findViewById(R.id.amountInput)
+        labelLayout = findViewById(R.id.labelLayout)
+        amountLayout = findViewById(R.id.amountLayout)
+
+        dbHelper = DatabaseHelper(this)
+
+        labelInput.addTextChangedListener(ValidationTextWatcher(labelLayout))
+        amountInput.addTextChangedListener(ValidationTextWatcher(amountLayout))
+
         val addTransactionBtn = findViewById<Button>(R.id.addTransactionBtn)
-        val labelInput = findViewById<TextView>(R.id.labelInput)
-        val amountInput = findViewById<TextView>(R.id.amountInput)
-        val labelLayout = findViewById<TextInputLayout>(R.id.labelLayout)
-        val amountLayout = findViewById<TextInputLayout>(R.id.amountLayout)
-        val closeBtn= findViewById<ImageButton>(R.id.closeBtn)
-
-        labelInput.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if (s?.isNotEmpty() == true) {
-                    labelLayout.error = null
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Not needed for your case
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // Not needed for your case
-            }
-        })
-
-        amountInput.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if (s?.isNotEmpty() == true) {
-                    amountLayout.error = null
-                }
-            }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Not needed for your case
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // Not needed for your case
-            }
-
-        })
+        val closeBtn = findViewById<ImageButton>(R.id.closeBtn)
 
         addTransactionBtn.setOnClickListener {
-            val label: String = labelInput.text.toString()
-            val amount: Double? = amountInput.text.toString().toDoubleOrNull()
+            val label = labelInput.text.toString()
+            val amountText = amountInput.text.toString()
+            val amount = amountText.toDoubleOrNull()
+
             if (label.isEmpty()) {
                 labelLayout.error = "Please enter a valid label"
+            } else {
+                labelLayout.error = null
             }
 
             if (amount == null) {
-                amountLayout.error = "Please enter the valid amount"
+                amountLayout.error = "Please enter a valid amount"
+            } else {
+                amountLayout.error = null
+                // Save the transaction to the database
+                val description = "" // You can set a description if needed
+                val transaction = Transaction(0, label, amount, description) // 0 for placeholder ID
+                dbHelper.insertTransaction(transaction)
+
+                // Finish the activity
+                finish()
             }
         }
 
@@ -73,11 +62,18 @@ class AddTransactionActivity : AppCompatActivity() {
             finish()
         }
     }
+
+    inner class ValidationTextWatcher(private val view: TextInputLayout) : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {
+            // No action needed here
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            // No action needed here
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            view.error = null
+        }
+    }
 }
-
-
-
-
-
-
-
