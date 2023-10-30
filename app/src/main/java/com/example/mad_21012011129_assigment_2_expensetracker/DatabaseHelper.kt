@@ -12,7 +12,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val DATABASE_NAME = "ExpenseTrackerDB"
         private const val DATABASE_VERSION = 1
         const val TABLE_TRANSACTIONS = "transactions"
-        private const val COLUMN_ID = "_id"
+        const val COLUMN_ID = "_id"
         const val COLUMN_LABEL = "label"
         const val COLUMN_AMOUNT = "amount"
         const val COLUMN_DESCRIPTION = "description"
