@@ -15,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+
 class MainActivity : AppCompatActivity() {
     private lateinit var deleteTransaction: Transaction
     private lateinit var transactions: List<Transaction>
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity() {
 
         val swipeHelper = ItemTouchHelper(itemTouchHelper)
         swipeHelper.attachToRecyclerView(recyclerView)
+
 
 
         addBtn.setOnClickListener {

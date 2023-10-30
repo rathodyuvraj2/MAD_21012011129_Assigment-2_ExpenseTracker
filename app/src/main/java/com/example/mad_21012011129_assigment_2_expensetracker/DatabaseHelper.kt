@@ -1,5 +1,6 @@
 package com.example.mad_21012011129_assigment_2_expensetracker
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
@@ -46,6 +47,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.close()
     }
 
+    @SuppressLint("Range")
     fun getAllTransactions(): List<Transaction> {
         val transactions = mutableListOf<Transaction>()
         val query = "SELECT * FROM $TABLE_TRANSACTIONS"
