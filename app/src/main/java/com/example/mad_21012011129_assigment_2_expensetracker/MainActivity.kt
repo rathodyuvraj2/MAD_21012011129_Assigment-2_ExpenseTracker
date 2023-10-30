@@ -1,7 +1,9 @@
 package com.example.mad_21012011129_assigment_2_expensetracker
 
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -16,7 +18,7 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
     private lateinit var deleteTransaction: Transaction
     private lateinit var transactions: List<Transaction>
-    private lateinit var oldtransactions: List<Transaction>
+    private lateinit var oldTransactions: List<Transaction>
     private lateinit var transactionAdapter: TransactionAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var dbHelper: DatabaseHelper
@@ -55,16 +57,38 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        val swipeHelper = ItemTouchHelper(itemTouchHelper)
+        swipeHelper.attachToRecyclerView(recyclerView)
+
 
         addBtn.setOnClickListener {
             startActivity(Intent(this@MainActivity, AddTransactionActivity::class.java))
         }
     }
 
+    private fun showSnackbar() {
+        val view = findViewById<View>(R.id.coordinator)
+        val snackbar = Snackbar.make(view, "Transaction deleted!", Snackbar.LENGTH_LONG)
+        snackbar.setAction("Undo") {
+            undoDelete()
+        }
+        val snackbarView = snackbar.view
+        val textView = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text) as TextView
+        textView.setTextColor(ContextCompat.getColor(this, R.color.white))
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.red))
+        snackbar.show()
+    }
+
     private fun deleteTransaction(transaction: Transaction) {
         val transactionId = transaction.id
 
         GlobalScope.launch {
+            // Update the oldTransactions before deleting the transaction
+            oldTransactions = ArrayList(transactions)
+
+            // Set deleteTransaction to the deleted transaction
+            deleteTransaction = transaction
+
             // Delete the transaction from the SQLite database
             dbHelper.writableDatabase.use { db ->
                 db.delete(DatabaseHelper.TABLE_TRANSACTIONS, "${DatabaseHelper.COLUMN_ID} = ?", arrayOf(transactionId.toString()))
@@ -81,15 +105,32 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showSnackbar() {
-        val snackbarMessage = "Item deleted"
 
-        Snackbar.make(findViewById(R.id.coordinatorLayout), snackbarMessage, Snackbar.LENGTH_SHORT)
-            .setAction("Undo") {
-                // Implement undo functionality if needed
+    private fun undoDelete() {
+        GlobalScope.launch {
+            if (deleteTransaction != null && transactions.isNotEmpty()) {
+                dbHelper.writableDatabase.use { db ->
+                    val values = ContentValues()
+                    values.put(DatabaseHelper.COLUMN_LABEL, deleteTransaction.label)
+                    values.put(DatabaseHelper.COLUMN_AMOUNT, deleteTransaction.amount)
+                    values.put(DatabaseHelper.COLUMN_DESCRIPTION, deleteTransaction.description)
+
+                    // Insert the deleted transaction back into the database
+                    db.insert(DatabaseHelper.TABLE_TRANSACTIONS, null, values)
+                }
+
+                // Restore the old transactions
+                transactions = ArrayList(oldTransactions)
+
+                runOnUiThread {
+                    transactionAdapter.setData(transactions)
+                    updateDashboard()
+                }
             }
-            .show()
+        }
     }
+
+
 
     override fun onResume() {
         super.onResume()
