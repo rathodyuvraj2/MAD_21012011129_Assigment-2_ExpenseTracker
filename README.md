@@ -1,16 +1,17 @@
-# Expense Tracker
-Objective
-The objective of this project is to create an expense tracker application that helps users manage their finances effectively. It will allow users to track their expenses, view their total expenses and balance, set a budget, add new transactions, delete transactions, and even undo transactions.
+                                                                                                         # Expense Tracker
+# Objective
 
-Features
-Total Expenses and Balance: Display the total expenses and current balance at a glance. This gives users a quick overview of their financial situation.
+The objective of this project is to create an expense tracker application with local database that helps users manage their finances effectively. It will allow users to track their expenses, view their total expenses and balance, set a budget, add new transactions, delete transactions, and even undo transactions.
 
-Budget Management: Allow users to set a budget for a specific time frame (e.g., monthly, weekly) and track their spending against the budget.
+# Features
+**Total Expenses and Balance**: Display the total expenses and current balance at a glance. This gives users a quick overview of their financial situation.
 
-Add New Transaction: Users can add new expenses or income transactions by providing a category, amount, date, and optional notes.
+**Budget Management**: Allow users to set a budget track their spending against the budget.
 
-Delete Transaction: Provide the ability to delete a transaction if it was added in error or is no longer relevant.
+**Add New Transaction**: Users can add new expenses or income transactions by providing a label,Amount,Description
 
-Undo Transaction: Implement an undo feature that allows users to revert the last transaction. This feature helps users correct mistakes easily.
+**Delete Transaction**: Provide the ability to delete a transaction if it was added in error or is no longer relevant.
+
+**Undo Transaction**: Implement an undo feature that allows users to revert the last transaction. This feature helps users correct mistakes easily.
 
 
