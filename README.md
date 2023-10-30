@@ -1,4 +1,7 @@
-                                                                                                         # Expense Tracker
+
+# Expense tracker        
+
+
 # Objective
 
 The objective of this project is to create an expense tracker application with local database that helps users manage their finances effectively. It will allow users to track their expenses, view their total expenses and balance, set a budget, add new transactions, delete transactions, and even undo transactions.
