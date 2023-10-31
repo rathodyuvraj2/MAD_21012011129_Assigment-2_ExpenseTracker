@@ -1,6 +1,9 @@
 
 # Expense tracker        
 
+# Description 
+
+The Expense Tracker App is a user-friendly and efficient Android application designed to help individuals monitor and manage their finances with ease. This app simplifies the process of tracking expenses, enabling users to maintain a comprehensive record of their financial transactions.
 
 # Objective
 
